@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { Dispatch, FormEvent, SetStateAction } from 'react'
 import type { Enquiry, LeadStatus } from '../Types'
-import { createRecordId } from '../Utils'
+import { createRecordId, localDateOffset } from '../Utils'
 
 type EnquiriesProps = {
   enquiries: Enquiry[]
@@ -15,12 +15,7 @@ const categories = ['Access Equipment', 'Air Compressors', 'Concrete Equipment',
 const salespeople = ['Aina Zulkifli', 'Daniel Lim', 'Farah Ismail']
 const blankForm: EnquiryForm = {
   customerName: '', companyName: '', email: '', phone: '', equipmentCategory: '', productModel: '', quantity: '1',
-  deliveryLocation: '', requirements: '', dateReceived: localDate(), status: 'New', assignedSalesperson: '', nextFollowUpDate: '',
-}
-
-function localDate() {
-  const now = new Date()
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+  deliveryLocation: '', requirements: '', dateReceived: localDateOffset(), status: 'New', assignedSalesperson: '', nextFollowUpDate: '',
 }
 
 function formatDate(value: string) {
@@ -38,7 +33,7 @@ function Enquiries({ enquiries, setEnquiries }: EnquiriesProps) {
   const [form, setForm] = useState<EnquiryForm>(blankForm)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const today = localDate()
+  const today = localDateOffset()
   const dueCount = enquiries.filter((item) => item.nextFollowUpDate && item.nextFollowUpDate <= today && !['Won', 'Lost'].includes(item.status)).length
   const filtered = useMemo(() => enquiries.filter((item) => {
     const term = search.trim().toLowerCase()
@@ -47,7 +42,7 @@ function Enquiries({ enquiries, setEnquiries }: EnquiriesProps) {
   }), [enquiries, search, statusFilter, categoryFilter])
 
   function openCreate() {
-    setForm({ ...blankForm, dateReceived: localDate() })
+    setForm({ ...blankForm, dateReceived: localDateOffset() })
     setEditingId(null)
     setErrors({})
     setDialog('form')

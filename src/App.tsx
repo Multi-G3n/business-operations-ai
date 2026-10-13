@@ -7,6 +7,7 @@ import Inventory from './pages/Inventory'
 import Orders, { type Order } from './pages/Order'
 import Products from './pages/Products'
 import type { Customer } from './pages/Customers'
+import { localDateOffset } from './Utils'
 
 export type InventoryTransaction = {
   id: number
@@ -19,13 +20,6 @@ export type InventoryTransaction = {
 }
 
 type Section = 'Overview' | 'Enquiries' | 'Products' | 'Inventory' | 'Orders' | 'Customers'
-
-const today = new Date()
-const dateOffset = (days: number) => {
-  const date = new Date(today)
-  date.setDate(date.getDate() + days)
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-}
 
 const starterProducts: Product[] = [
   { id: 101, name: 'Komatsu PC30MR-5 Mini Excavator', sku: 'KOM-PC30MR5', price: 128000, stock: 3, threshold: 2 },
@@ -42,42 +36,108 @@ const starterCustomers: Customer[] = [
 ]
 
 const starterEnquiries: Enquiry[] = [
-  { id: 301, customerName: 'Farid Rahman', companyName: 'Bina Teguh Construction Sdn Bhd', email: 'farid@binateguh.example', phone: '+60 12-345 6789', equipmentCategory: 'Excavators', productModel: 'Komatsu PC30MR-5', quantity: 1, deliveryLocation: 'Shah Alam, Selangor', requirements: 'Rubber tracks preferred. Please include transport and a 3-year service package in the quotation.', dateReceived: dateOffset(-2), status: 'New', assignedSalesperson: 'Aina Zulkifli', nextFollowUpDate: dateOffset(0) },
-  { id: 302, customerName: 'Mei Ling Tan', companyName: 'Maju Infra Works Sdn Bhd', email: 'meiling@majuinfra.example', phone: '+60 16-234 5678', equipmentCategory: 'Access Equipment', productModel: 'JLG 450AJ', quantity: 2, deliveryLocation: 'Johor Bahru, Johor', requirements: 'For a commercial building project. Need delivery by end of November and operator training.', dateReceived: dateOffset(-5), status: 'Quotation Pending', assignedSalesperson: 'Daniel Lim', nextFollowUpDate: dateOffset(1) },
-  { id: 303, customerName: 'Arun Kumar', companyName: 'Eastline Engineering Sdn Bhd', email: 'arun@eastline.example', phone: '+60 19-876 5432', equipmentCategory: 'Air Compressors', productModel: 'Atlas Copco XAS 88', quantity: 3, deliveryLocation: 'Kuantan, Pahang', requirements: 'Please confirm operating hours, warranty coverage and scheduled maintenance options.', dateReceived: dateOffset(-8), status: 'Quotation Sent', assignedSalesperson: 'Aina Zulkifli', nextFollowUpDate: dateOffset(-1) },
-  { id: 304, customerName: 'Nurul Huda Ismail', companyName: 'Cekap Precast Industries Sdn Bhd', email: 'nurul@cekaprecast.example', phone: '+60 13-555 0142', equipmentCategory: 'Concrete Equipment', productModel: 'Concrete batching plant, 60 m³/hr', quantity: 1, deliveryLocation: 'Batu Pahat, Johor', requirements: 'Looking for installation, commissioning and a preventive maintenance proposal.', dateReceived: dateOffset(-1), status: 'Contacted', assignedSalesperson: 'Daniel Lim', nextFollowUpDate: dateOffset(3) },
-  { id: 305, customerName: 'Jason Wong', companyName: 'Northport Facilities Sdn Bhd', email: 'jason@northport.example', phone: '+60 17-440 2266', equipmentCategory: 'Generators', productModel: '100 kVA silent diesel generator', quantity: 2, deliveryLocation: 'Port Klang, Selangor', requirements: 'Indoor installation. Please advise on ATS compatibility and after-sales support.', dateReceived: dateOffset(-12), status: 'Won', assignedSalesperson: 'Aina Zulkifli', nextFollowUpDate: '' },
-  { id: 306, customerName: 'Siti Aminah', companyName: 'Seri Murni Landscaping Sdn Bhd', email: 'siti@serimurni.example', phone: '+60 11-2020 8831', equipmentCategory: 'Excavators', productModel: 'Kubota U55-4', quantity: 1, deliveryLocation: 'Ipoh, Perak', requirements: 'Interested in available units and finance options for a small landscaping team.', dateReceived: dateOffset(-4), status: 'Lost', assignedSalesperson: 'Daniel Lim', nextFollowUpDate: '' },
+  { id: 301, customerName: 'Farid Rahman', companyName: 'Bina Teguh Construction Sdn Bhd', email: 'farid@binateguh.example', phone: '+60 12-345 6789', equipmentCategory: 'Excavators', productModel: 'Komatsu PC30MR-5', quantity: 1, deliveryLocation: 'Shah Alam, Selangor', requirements: 'Rubber tracks preferred. Please include transport and a 3-year service package in the quotation.', dateReceived: localDateOffset(-2), status: 'New', assignedSalesperson: 'Aina Zulkifli', nextFollowUpDate: localDateOffset(0) },
+  { id: 302, customerName: 'Mei Ling Tan', companyName: 'Maju Infra Works Sdn Bhd', email: 'meiling@majuinfra.example', phone: '+60 16-234 5678', equipmentCategory: 'Access Equipment', productModel: 'JLG 450AJ', quantity: 2, deliveryLocation: 'Johor Bahru, Johor', requirements: 'For a commercial building project. Need delivery by end of November and operator training.', dateReceived: localDateOffset(-5), status: 'Quotation Pending', assignedSalesperson: 'Daniel Lim', nextFollowUpDate: localDateOffset(1) },
+  { id: 303, customerName: 'Arun Kumar', companyName: 'Eastline Engineering Sdn Bhd', email: 'arun@eastline.example', phone: '+60 19-876 5432', equipmentCategory: 'Air Compressors', productModel: 'Atlas Copco XAS 88', quantity: 3, deliveryLocation: 'Kuantan, Pahang', requirements: 'Please confirm operating hours, warranty coverage and scheduled maintenance options.', dateReceived: localDateOffset(-8), status: 'Quotation Sent', assignedSalesperson: 'Aina Zulkifli', nextFollowUpDate: localDateOffset(-1) },
+  { id: 304, customerName: 'Nurul Huda Ismail', companyName: 'Cekap Precast Industries Sdn Bhd', email: 'nurul@cekaprecast.example', phone: '+60 13-555 0142', equipmentCategory: 'Concrete Equipment', productModel: 'Concrete batching plant, 60 m³/hr', quantity: 1, deliveryLocation: 'Batu Pahat, Johor', requirements: 'Looking for installation, commissioning and a preventive maintenance proposal.', dateReceived: localDateOffset(-1), status: 'Contacted', assignedSalesperson: 'Daniel Lim', nextFollowUpDate: localDateOffset(3) },
+  { id: 305, customerName: 'Jason Wong', companyName: 'Northport Facilities Sdn Bhd', email: 'jason@northport.example', phone: '+60 17-440 2266', equipmentCategory: 'Generators', productModel: '100 kVA silent diesel generator', quantity: 2, deliveryLocation: 'Port Klang, Selangor', requirements: 'Indoor installation. Please advise on ATS compatibility and after-sales support.', dateReceived: localDateOffset(-12), status: 'Won', assignedSalesperson: 'Aina Zulkifli', nextFollowUpDate: '' },
+  { id: 306, customerName: 'Siti Aminah', companyName: 'Seri Murni Landscaping Sdn Bhd', email: 'siti@serimurni.example', phone: '+60 11-2020 8831', equipmentCategory: 'Excavators', productModel: 'Kubota U55-4', quantity: 1, deliveryLocation: 'Ipoh, Perak', requirements: 'Interested in available units and finance options for a small landscaping team.', dateReceived: localDateOffset(-4), status: 'Lost', assignedSalesperson: 'Daniel Lim', nextFollowUpDate: '' },
 ]
 
 const starterTransactions: InventoryTransaction[] = [
   { id: 401, productName: 'Atlas Copco XAS 88 Compressor', sku: 'ATC-XAS88', type: 'Stock In', quantity: 2, reason: 'Demo stock received', date: new Date().toLocaleString() },
 ]
 
-function loadDemoData<T,>(key: string, fallback: T): T {
+const invalidStorageKeys = new Set<string>()
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
+function isNumber(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value)
+}
+
+function hasStringFields(value: unknown, fields: string[]) {
+  return isObject(value) && fields.every((field) => typeof value[field] === 'string')
+}
+
+function isCollection<T>(value: unknown, isItem: (item: unknown) => item is T): value is T[] {
+  return Array.isArray(value) && value.every(isItem)
+}
+
+function isProduct(value: unknown): value is Product {
+  return hasStringFields(value, ['name', 'sku']) && isObject(value) && isNumber(value.id) && isNumber(value.price) && isNumber(value.stock) && isNumber(value.threshold)
+}
+
+function isCustomer(value: unknown): value is Customer {
+  return hasStringFields(value, ['name', 'company', 'email', 'phone']) && isObject(value) && isNumber(value.id)
+}
+
+function isOrder(value: unknown): value is Order {
+  return hasStringFields(value, ['customer', 'product', 'status', 'paymentStatus']) && isObject(value) && isNumber(value.id) && isNumber(value.productId) && isNumber(value.quantity) && isNumber(value.total) && ['Pending', 'Completed', 'Cancelled'].includes(String(value.status)) && ['Paid', 'Unpaid'].includes(String(value.paymentStatus))
+}
+
+function isTransaction(value: unknown): value is InventoryTransaction {
+  return hasStringFields(value, ['productName', 'sku', 'type', 'reason', 'date']) && isObject(value) && isNumber(value.id) && isNumber(value.quantity) && ['Stock In', 'Stock Out'].includes(String(value.type))
+}
+
+function isEnquiry(value: unknown): value is Enquiry {
+  return hasStringFields(value, ['customerName', 'companyName', 'email', 'phone', 'equipmentCategory', 'productModel', 'deliveryLocation', 'requirements', 'dateReceived', 'status', 'assignedSalesperson', 'nextFollowUpDate']) && isObject(value) && isNumber(value.id) && Number.isInteger(value.quantity) && Number(value.quantity) > 0 && ['New', 'Contacted', 'Quotation Pending', 'Quotation Sent', 'Won', 'Lost'].includes(String(value.status))
+}
+
+function loadDemoData<T,>(key: string, fallback: T, isValid: (value: unknown) => value is T): T {
   try {
     const stored = window.localStorage.getItem(key)
-    return stored ? JSON.parse(stored) as T : fallback
-  } catch {
-    return fallback
+    if (!stored) return fallback
+    const parsed: unknown = JSON.parse(stored)
+    if (isValid(parsed)) return parsed
+    invalidStorageKeys.add(key)
+    console.error(`Saved demo data for "${key}" has an unexpected format. Sample data will be used.`)
+  } catch (error) {
+    invalidStorageKeys.add(key)
+    console.error(`Could not read saved demo data for "${key}". Sample data will be used.`, error)
   }
+  return fallback
+}
+
+function persistDemoData(key: string, value: unknown) {
+  if (invalidStorageKeys.has(key)) {
+    window.dispatchEvent(new Event('demo-storage-error'))
+    return
+  }
+  window.localStorage.setItem(key, JSON.stringify(value))
 }
 
 const sections: Section[] = ['Overview', 'Enquiries', 'Products', 'Inventory', 'Orders', 'Customers']
 
 function App() {
   const [section, setSection] = useState<Section>('Enquiries')
-  const [products, setProducts] = useState(() => loadDemoData('business-operations.products', starterProducts))
-  const [customers, setCustomers] = useState(() => loadDemoData('business-operations.customers', starterCustomers))
-  const [orders, setOrders] = useState(() => loadDemoData<Order[]>('business-operations.orders', []))
-  const [transactions, setTransactions] = useState(() => loadDemoData('business-operations.transactions', starterTransactions))
-  const [enquiries, setEnquiries] = useState(() => loadDemoData('business-operations.enquiries', starterEnquiries))
+  const [products, setProducts] = useState(() => loadDemoData('business-operations.products', starterProducts, (value): value is Product[] => isCollection(value, isProduct)))
+  const [customers, setCustomers] = useState(() => loadDemoData('business-operations.customers', starterCustomers, (value): value is Customer[] => isCollection(value, isCustomer)))
+  const [orders, setOrders] = useState(() => loadDemoData<Order[]>('business-operations.orders', [], (value): value is Order[] => isCollection(value, isOrder)))
+  const [transactions, setTransactions] = useState(() => loadDemoData('business-operations.transactions', starterTransactions, (value): value is InventoryTransaction[] => isCollection(value, isTransaction)))
+  const [enquiries, setEnquiries] = useState(() => loadDemoData('business-operations.enquiries', starterEnquiries, (value): value is Enquiry[] => isCollection(value, isEnquiry)))
+  const [persistenceError, setPersistenceError] = useState(false)
 
-  useEffect(() => { window.localStorage.setItem('business-operations.products', JSON.stringify(products)) }, [products])
-  useEffect(() => { window.localStorage.setItem('business-operations.customers', JSON.stringify(customers)) }, [customers])
-  useEffect(() => { window.localStorage.setItem('business-operations.orders', JSON.stringify(orders)) }, [orders])
-  useEffect(() => { window.localStorage.setItem('business-operations.transactions', JSON.stringify(transactions)) }, [transactions])
-  useEffect(() => { window.localStorage.setItem('business-operations.enquiries', JSON.stringify(enquiries)) }, [enquiries])
+  useEffect(() => {
+    const reportFailure = () => setPersistenceError(true)
+    window.addEventListener('demo-storage-error', reportFailure)
+    return () => window.removeEventListener('demo-storage-error', reportFailure)
+  }, [])
+
+  useEffect(() => {
+    try {
+      persistDemoData('business-operations.products', products)
+      persistDemoData('business-operations.customers', customers)
+      persistDemoData('business-operations.orders', orders)
+      persistDemoData('business-operations.transactions', transactions)
+      persistDemoData('business-operations.enquiries', enquiries)
+    } catch (error) {
+      console.error('Could not save demo data in this browser.', error)
+      window.dispatchEvent(new Event('demo-storage-error'))
+    }
+  }, [products, customers, orders, transactions, enquiries])
 
   const content = section === 'Enquiries' ? <Enquiries enquiries={enquiries} setEnquiries={setEnquiries} />
     : section === 'Products' ? <Products products={products} setProducts={setProducts} />
@@ -104,7 +164,7 @@ function App() {
       </aside>
       <main className="main-area">
         <header className="app-topbar"><div><span className="topbar-kicker">EQUIPFLOW / {section.toUpperCase()}</span><h1>{section === 'Overview' ? 'Overview' : section}</h1></div><div className="topbar-user"><span className="avatar">AS</span><span>Aina Zulkifli<small>Sales team</small></span></div></header>
-        <div className="page-content">{content}</div>
+        <div className="page-content">{persistenceError && <p className="storage-warning" role="status">Some saved data could not be read or browser storage is unavailable. Changes may not persist; details are in the browser console.</p>}{content}</div>
         <footer className="app-footer">EquipFlow demo <span>•</span> Built for Malaysian equipment distributors</footer>
       </main>
     </div>
@@ -113,7 +173,7 @@ function App() {
 
 function Overview({ enquiries, products, orders, onNavigate }: { enquiries: Enquiry[]; products: Product[]; orders: Order[]; onNavigate: (section: Section) => void }) {
   const newLeads = enquiries.filter((item) => item.status === 'New').length
-  const due = enquiries.filter((item) => item.nextFollowUpDate && item.nextFollowUpDate <= dateOffset(0) && !['Won', 'Lost'].includes(item.status)).length
+  const due = enquiries.filter((item) => item.nextFollowUpDate && item.nextFollowUpDate <= localDateOffset() && !['Won', 'Lost'].includes(item.status)).length
   return <section className="overview-page">
     <div className="page-intro"><div><p className="eyebrow">YOUR SALES WORKSPACE</p><h2>Good morning, Aina</h2><p>Here’s what’s happening across your equipment business.</p></div><button className="primary-button" onClick={() => onNavigate('Enquiries')}>＋ View enquiries</button></div>
     <div className="metric-grid">

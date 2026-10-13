@@ -44,6 +44,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .avatar { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 50%; background: #e9effb; color: #3767bd; font-size: 10px; font-weight: 750; }
 .page-content { width: min(100%, 1440px); margin: 0 auto; padding: 30px 37px 45px; }
 .app-footer { padding: 15px 37px; border-top: 1px solid var(--line); color: #98a2b0; font-size: 10px; }
+.storage-warning { margin: 0 0 16px; padding: 10px 12px; border: 1px solid #f0d4a8; border-radius: 7px; background: #fff8ed; color: #8b6125; font-size: 11px; }
 .app-footer span { padding: 0 5px; color: #bec6d1; }
 .page-intro { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 23px; }
 .eyebrow { margin: 0 0 8px; color: #8793a5; font-size: 9px; font-weight: 750; letter-spacing: 1.05px; }
