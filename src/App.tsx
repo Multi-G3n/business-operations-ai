@@ -1,12 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
-import Products from './pages/Products'
-import Inventory from './pages/Inventory'
-import Orders from './pages/Order'
-import Customers from './pages/Customers'
-import type { Product } from './Types'
-import type { Customer } from './pages/Customers'
-import type { Order } from './pages/Order'
 
 export type InventoryTransaction = {
   id: number
@@ -18,330 +11,208 @@ export type InventoryTransaction = {
   date: string
 }
 
+type CardTheme = 'garden' | 'classic' | 'sunset'
+
+type Invitation = {
+  partnerOne: string
+  partnerTwo: string
+  hostLine: string
+  date: string
+  time: string
+  venue: string
+  message: string
+  theme: CardTheme
+}
+
+const defaultInvitation: Invitation = {
+  partnerOne: 'Amelia',
+  partnerTwo: 'Oliver',
+  hostLine: 'Together with their families',
+  date: '2027-06-12',
+  time: '17:30',
+  venue: 'The Glasshouse, Kuala Lumpur',
+  message: 'A day filled with love, laughter, and a little bit of magic. We would be delighted to celebrate with you.',
+  theme: 'garden',
+}
+
+const storageKey = 'wedding-card-studio.invitation'
+
+function loadInvitation(): Invitation {
+  try {
+    const stored = window.localStorage.getItem(storageKey)
+    if (stored) return { ...defaultInvitation, ...JSON.parse(stored) as Partial<Invitation> }
+  } catch {
+    // Start with the sample invitation if saved browser data is unavailable.
+  }
+
+  return defaultInvitation
+}
+
 function App() {
-  const [currentPage, setCurrentPage] = useState('dashboard')
+  const [invitation, setInvitation] = useState<Invitation>(loadInvitation)
+  const [savedMessage, setSavedMessage] = useState('Saved in this browser')
 
-  const [products, setProducts] = useState<Product[]>([
-    {
-      id: 1,
-      name: 'Ice Cube Machine K40',
-      sku: 'K40',
-      price: 8500,
-      stock: 12,
-      threshold: 3,
-    },
-    {
-      id: 2,
-      name: 'Ice Cube Machine K60',
-      sku: 'K60',
-      price: 10500,
-      stock: 5,
-      threshold: 3,
-    },
-    {
-      id: 3,
-      name: 'Ice Cube Machine K125',
-      sku: 'K125',
-      price: 14500,
-      stock: 2,
-      threshold: 3,
-    },
-  ])
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(storageKey, JSON.stringify(invitation))
+    } catch {
+      setSavedMessage('Unable to save in this browser')
+      return
+    }
 
-  const [transactions, setTransactions] = useState<
-    InventoryTransaction[]
-  >([])
+    setSavedMessage('Saved in this browser')
+  }, [invitation])
 
-  const [customers, setCustomers] = useState<Customer[]>([
-    {
-      id: 1,
-      name: 'Ahmad',
-      company: 'ABC Cafe',
-      email: 'ahmad@abccafe.com',
-      phone: '012-3456789',
-    },
-    {
-      id: 2,
-      name: 'John',
-      company: 'XYZ Restaurant',
-      email: 'john@xyzrestaurant.com',
-      phone: '013-9876543',
-    },
-  ])
+  function updateInvitation<K extends keyof Invitation>(key: K, value: Invitation[K]) {
+    setInvitation((current) => ({ ...current, [key]: value }))
+  }
 
-  const [orders, setOrders] = useState<Order[]>([
-    {
-      id: 1001,
-      customer: 'ABC Cafe',
-      product: 'Ice Cube Machine K40',
-      productId: 1,
-      quantity: 1,
-      total: 8500,
-      status: 'Pending',
-      paymentStatus: 'Unpaid',
-    },
-    {
-      id: 1002,
-      customer: 'XYZ Restaurant',
-      product: 'Ice Cube Machine K60',
-      productId: 2,
-      quantity: 2,
-      total: 21000,
-      status: 'Completed',
-      paymentStatus: 'Paid',
-    },
-  ])
+  function resetInvitation() {
+    setInvitation(defaultInvitation)
+  }
+
+  const dateLabel = invitation.date
+    ? new Date(`${invitation.date}T12:00:00`).toLocaleDateString('en-MY', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+    : 'Your wedding date'
 
   return (
-    <div className="app">
+    <main className="studio-shell">
+      <header className="studio-header">
+        <a className="brand" href="#top" aria-label="Ever After home">
+          <span className="brand-mark" aria-hidden="true">✳</span>
+          <span>ever after<span className="brand-period">.</span></span>
+        </a>
+        <div className="header-note"><span className="status-dot" /> Invitation studio</div>
+      </header>
 
-      {/* Sidebar */}
-      <aside className="sidebar">
+      <section className="intro" id="top">
+        <p className="eyebrow">A little something made by you</p>
+        <h1>Your day, your <em>story.</em></h1>
+        <p className="intro-copy">Create a wedding invitation that feels like the two of you. Make it yours, one detail at a time.</p>
+      </section>
 
-        <div className="logo">
-          <span>BO</span>
-
-          <div>
-            <strong>Business</strong>
-            <small>Operations AI</small>
-          </div>
-        </div>
-
-        <nav className="nav">
-
-          <button
-            className={`nav-item ${
-              currentPage === 'dashboard' ? 'active' : ''
-            }`}
-            onClick={() => setCurrentPage('dashboard')}
-          >
-            Dashboard
-          </button>
-
-          <button
-            className={`nav-item ${
-              currentPage === 'products' ? 'active' : ''
-            }`}
-            onClick={() => setCurrentPage('products')}
-          >
-            Products
-          </button>
-
-          <button
-            className={`nav-item ${
-              currentPage === 'inventory' ? 'active' : ''
-            }`}
-            onClick={() => setCurrentPage('inventory')}
-          >
-            Inventory
-          </button>
-
-          <button
-            className={`nav-item ${
-              currentPage === 'orders' ? 'active' : ''
-            }`}
-            onClick={() => setCurrentPage('orders')}
-          >
-            Orders
-          </button>
-
-          <button
-            className={`nav-item ${
-              currentPage === 'customers' ? 'active' : ''
-            }`}
-            onClick={() => setCurrentPage('customers')}
-          >
-            Customers
-          </button>
-
-          <button
-            className={`nav-item ${
-              currentPage === 'ai-assistant'
-                ? 'active'
-                : ''
-            }`}
-            onClick={() =>
-              setCurrentPage('ai-assistant')
-            }
-          >
-            AI Assistant
-          </button>
-
-        </nav>
-
-        <div className="sidebar-bottom">
-          <div className="user">
-
-            <div className="avatar">
-              AD
-            </div>
-
+      <section className="workspace" aria-label="Wedding invitation editor">
+        <div className="editor-panel">
+          <div className="panel-heading">
             <div>
-              <strong>Admin</strong>
-              <small>Administrator</small>
+              <p className="eyebrow">01 / Make it yours</p>
+              <h2>The details</h2>
             </div>
+            <span className="step-count">1 of 1</span>
+          </div>
 
+          <div className="form-section">
+            <h3>The happy couple</h3>
+            <div className="field-row">
+              <label className="field">
+                <span>First name</span>
+                <input value={invitation.partnerOne} onChange={(event) => updateInvitation('partnerOne', event.target.value)} placeholder="Amelia" />
+              </label>
+              <label className="field">
+                <span>Second name</span>
+                <input value={invitation.partnerTwo} onChange={(event) => updateInvitation('partnerTwo', event.target.value)} placeholder="Oliver" />
+              </label>
+            </div>
+            <label className="field">
+              <span>Opening line</span>
+              <input value={invitation.hostLine} onChange={(event) => updateInvitation('hostLine', event.target.value)} placeholder="Together with their families" />
+            </label>
+          </div>
+
+          <div className="form-section">
+            <h3>When & where</h3>
+            <div className="field-row">
+              <label className="field">
+                <span>Date</span>
+                <input type="date" value={invitation.date} onChange={(event) => updateInvitation('date', event.target.value)} />
+              </label>
+              <label className="field">
+                <span>Time</span>
+                <input type="time" value={invitation.time} onChange={(event) => updateInvitation('time', event.target.value)} />
+              </label>
+            </div>
+            <label className="field">
+              <span>Venue</span>
+              <input value={invitation.venue} onChange={(event) => updateInvitation('venue', event.target.value)} placeholder="Venue name and location" />
+            </label>
+          </div>
+
+          <div className="form-section">
+            <h3>A note to your guests</h3>
+            <label className="field">
+              <span>Invitation message</span>
+              <textarea value={invitation.message} onChange={(event) => updateInvitation('message', event.target.value)} rows={3} maxLength={180} />
+              <span className="character-count">{invitation.message.length}/180</span>
+            </label>
+          </div>
+
+          <div className="form-section theme-section">
+            <div className="theme-heading">
+              <h3>Choose a feeling</h3>
+              <span>Theme</span>
+            </div>
+            <div className="theme-options" role="group" aria-label="Card theme">
+              <button className={`theme-option garden-swatch ${invitation.theme === 'garden' ? 'selected' : ''}`} onClick={() => updateInvitation('theme', 'garden')} aria-pressed={invitation.theme === 'garden'}>
+                <span className="swatch" /> Garden
+              </button>
+              <button className={`theme-option classic-swatch ${invitation.theme === 'classic' ? 'selected' : ''}`} onClick={() => updateInvitation('theme', 'classic')} aria-pressed={invitation.theme === 'classic'}>
+                <span className="swatch" /> Classic
+              </button>
+              <button className={`theme-option sunset-swatch ${invitation.theme === 'sunset' ? 'selected' : ''}`} onClick={() => updateInvitation('theme', 'sunset')} aria-pressed={invitation.theme === 'sunset'}>
+                <span className="swatch" /> Sunset
+              </button>
+            </div>
+          </div>
+
+          <div className="editor-footer">
+            <span className="save-state"><span className="save-dot" />{savedMessage}</span>
+            <button className="reset-button" onClick={resetInvitation}>Reset sample</button>
           </div>
         </div>
 
-      </aside>
-
-      {/* Main content */}
-      <main className="main">
-
-        {currentPage === 'products' ? (
-
-          <Products
-            products={products}
-            setProducts={setProducts}
-          />
-
-        ) : currentPage === 'inventory' ? (
-
-          <Inventory
-            products={products}
-            setProducts={setProducts}
-            transactions={transactions}
-            setTransactions={setTransactions}
-          />
-
-        ) : currentPage === 'orders' ? (
-
-          <Orders
-            products={products}
-            setProducts={setProducts}
-            customers={customers}
-            orders={orders}
-            setOrders={setOrders}
-            setTransactions={setTransactions}
-          />
-
-        ) : currentPage === 'customers' ? (
-
-          <Customers
-            customers={customers}
-            setCustomers={setCustomers}
-          />
-
-        ) : (
-
-          <div className="dashboard">
-
-            <header className="topbar">
-
-              <div>
-                <h1>Dashboard</h1>
-                <p>
-                  Overview of your business operations
-                </p>
-              </div>
-
-              <button className="profile-button">
-                Admin
-              </button>
-
-            </header>
-
-            <section className="stats-grid">
-
-              <div className="stat-card">
-                <span>Total Sales</span>
-                <strong>RM 12,450</strong>
-                <small>This month</small>
-              </div>
-
-              <div className="stat-card">
-                <span>Total Orders</span>
-                <strong>38</strong>
-                <small>This month</small>
-              </div>
-
-              <div className="stat-card">
-                <span>Low Stock</span>
-                <strong>5</strong>
-                <small>
-                  Products need attention
-                </small>
-              </div>
-
-              <div className="stat-card">
-                <span>Unpaid Orders</span>
-                <strong>7</strong>
-                <small>
-                  Requires follow-up
-                </small>
-              </div>
-
-            </section>
-
-            <section className="dashboard-grid">
-
-              <div className="panel">
-
-                <div className="panel-header">
-
-                  <div>
-                    <h2>Recent Orders</h2>
-                    <p>
-                      Latest business transactions
-                    </p>
-                  </div>
-
-                </div>
-
-                <p>
-                  No recent orders yet.
-                </p>
-
-              </div>
-
-              <div className="panel">
-
-                <div className="panel-header">
-
-                  <div>
-                    <h2>AI Assistant</h2>
-                    <p>
-                      Ask about your business data
-                    </p>
-                  </div>
-
-                </div>
-
-                <div className="ai-box">
-
-                  <div className="ai-icon">
-                    AI
-                  </div>
-
-                  <div>
-                    <strong>
-                      Business Operations AI
-                    </strong>
-
-                    <p>
-                      Ask questions about products,
-                      inventory, orders and customers.
-                    </p>
-                  </div>
-
-                </div>
-
-                <button className="ai-button">
-                  Open AI Assistant
-                </button>
-
-              </div>
-
-            </section>
-
+        <aside className="preview-panel" aria-label="Live invitation preview">
+          <div className="preview-heading">
+            <div>
+              <p className="eyebrow">02 / The finished feeling</p>
+              <h2>A little preview</h2>
+            </div>
+            <span className="live-pill"><span /> LIVE</span>
           </div>
 
-        )}
+          <div className="card-stage">
+            <article className={`invitation-card theme-${invitation.theme}`}>
+              <div className="card-border">
+                <div className="card-decoration" aria-hidden="true"><span>✳</span><i>✧</i></div>
+                <p className="card-hostline">{invitation.hostLine || 'Together with their families'}</p>
+                <p className="card-invite">joyfully invite you to celebrate</p>
+                <h2 className="couple-names">
+                  <span>{invitation.partnerOne || 'Your name'}</span>
+                  <i>&</i>
+                  <span>{invitation.partnerTwo || 'Your love'}</span>
+                </h2>
+                <span className="card-rule" />
+                <p className="card-date">{dateLabel}</p>
+                <p className="card-time">{invitation.time ? new Date(`2000-01-01T${invitation.time}`).toLocaleTimeString('en-MY', { hour: 'numeric', minute: '2-digit' }) : 'Your ceremony time'}</p>
+                <p className="card-venue">{invitation.venue || 'Your venue'}</p>
+                <p className="card-message">{invitation.message || 'Add a personal note for your guests.'}</p>
+                <div className="card-bottom-mark" aria-hidden="true">✳</div>
+              </div>
+            </article>
+          </div>
+          <p className="preview-caption">A keepsake for the beginning of forever.</p>
+        </aside>
+      </section>
 
-      </main>
-
-    </div>
+      <footer className="page-footer">
+        <span>Made for the moments that matter.</span>
+        <span>EVER AFTER STUDIO <i>·</i> 2026</span>
+      </footer>
+    </main>
   )
 }
 
