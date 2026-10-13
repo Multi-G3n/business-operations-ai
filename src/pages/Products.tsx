@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
 import type { Product } from '../Types'
+import { createRecordId } from '../Utils'
 
 type ProductsProps = {
   products: Product[]
@@ -85,7 +86,7 @@ function Products({
       )
     } else {
       const product: Product = {
-        id: Date.now(),
+        id: createRecordId(),
         name,
         sku,
         price,

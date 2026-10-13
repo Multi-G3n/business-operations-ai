@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { createRecordId } from '../Utils'
 
 export type Customer = {
   id: number
@@ -45,7 +46,7 @@ function Customers({
     }
 
     const customer: Customer = {
-      id: Date.now(),
+      id: createRecordId(),
       name: newCustomer.name,
       company: newCustomer.company,
       email: newCustomer.email,

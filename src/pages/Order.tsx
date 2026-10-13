@@ -3,6 +3,7 @@ import type { Dispatch, SetStateAction } from 'react'
 import type { Product } from '../Types'
 import type { Customer } from './Customers'
 import type { InventoryTransaction } from '../App'
+import { createRecordId, currentDateTime } from '../Utils'
 
 export type Order = {
   id: number
@@ -95,7 +96,7 @@ function Orders({
     }
 
     const order: Order = {
-      id: Date.now(),
+      id: createRecordId(),
       customer: newOrder.customer,
       product: product.name,
       productId: product.id,
@@ -124,13 +125,13 @@ function Orders({
 
     setTransactions((previousTransactions) => [
       {
-        id: Date.now(),
+        id: createRecordId(),
         productName: product.name,
         sku: product.sku,
         type: 'Stock Out',
         quantity,
         reason: `Order #${order.id}`,
-        date: new Date().toLocaleString(),
+        date: currentDateTime(),
       },
       ...previousTransactions,
     ])

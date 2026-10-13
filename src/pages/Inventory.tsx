@@ -3,6 +3,7 @@ import { useState } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
 import type { Product } from '../Types'
 import type { InventoryTransaction } from '../App'
+import { createRecordId, currentDateTime } from '../Utils'
 
 type InventoryProps = {
   products: Product[]
@@ -61,13 +62,13 @@ function Inventory({
     )
 
     const transaction: InventoryTransaction = {
-      id: Date.now(),
+      id: createRecordId(),
       productName: product.name,
       sku: product.sku,
       type: amount > 0 ? 'Stock In' : 'Stock Out',
       quantity: Math.abs(amount),
       reason: 'Quick adjustment',
-      date: new Date().toLocaleString(),
+      date: currentDateTime(),
     }
 
     setTransactions(
@@ -136,7 +137,7 @@ function Inventory({
     )
 
     const transaction: InventoryTransaction = {
-      id: Date.now(),
+      id: createRecordId(),
       productName: selectedProduct.name,
       sku: selectedProduct.sku,
       type:
@@ -145,7 +146,7 @@ function Inventory({
           : 'Stock Out',
       quantity,
       reason: adjustment.reason,
-      date: new Date().toLocaleString(),
+      date: currentDateTime(),
     }
 
     setTransactions(
